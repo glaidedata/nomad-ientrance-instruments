@@ -1,0 +1,32 @@
+{
+  "template": "https://github.com/FAIRmat-NFDI/cookiecutter-nomad-plugin",
+  "commit": "0dcee23a249225f398052817c6f2ea52c9ddb307",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "full_name": "Abbas Gholami",
+      "email": "abbas.gholami@glaidedata.com",
+      "github_username": "abbasgholami71",
+      "plugin_name": "ientrance-instruments",
+      "module_name": "ientrance_instruments",
+      "short_description": "Schema and parser for iEntrance FabLIMS instruments",
+      "version": "0.1.0",
+      "license": "Apache Software License 2.0",
+      "include_schema_package": true,
+      "include_normalizer": false,
+      "include_parser": true,
+      "include_app": false,
+      "include_example_uploads": false,
+      "include_action": false,
+      "include_north_tools": false,
+      "north_tool_name": "my_north_tool",
+      "_copy_without_render": [
+        "*.html",
+        "*.png"
+      ],
+      "_template": "https://github.com/FAIRmat-NFDI/cookiecutter-nomad-plugin",
+      "_commit": "0dcee23a249225f398052817c6f2ea52c9ddb307"
+    }
+  },
+  "directory": null
+}
