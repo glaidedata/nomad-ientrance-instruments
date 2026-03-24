@@ -1,3 +1,6 @@
 data:
-  m_def: ientrance_instruments.schema_packages.schema_package.NewSchemaPackage
-  name: Markus
+  m_def: ientrance_instruments.schema_packages.schema_package.IEntranceInstrument
+  fablims_id: 999
+  manufacturer: "Test Corp"
+  product_model: "Test-O-Matic 3000"
+  equipment_status: "Online"
