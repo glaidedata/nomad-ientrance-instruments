@@ -4,7 +4,8 @@ if TYPE_CHECKING:
     pass
 
 from nomad.config import config
-from nomad.datamodel.metainfo.eln import ELNInstrument
+from nomad.datamodel.data import ArchiveSection
+from nomad.datamodel.metainfo.basesections import Instrument
 from nomad.metainfo import Quantity, SchemaPackage, Section, SubSection
 
 configuration = config.get_plugin_entry_point(
@@ -14,40 +15,36 @@ configuration = config.get_plugin_entry_point(
 m_package = SchemaPackage()
 
 
-class EquipmentTechnique(Section):
+class EquipmentTechnique(ArchiveSection):
     """Subsection for techniques supported by the instrument."""
 
-    technique_id = Quantity(type=int)
-    name = Quantity(type=str)
-    generic_equipment_name = Quantity(type=str)
-    main_category = Quantity(type=str)
-    sub_category = Quantity(type=str)
+    technique_id = Quantity(type=int, a_eln=dict(component='NumberEditQuantity'))
+    name = Quantity(type=str, a_eln=dict(component='StringEditQuantity'))
+    generic_equipment_name = Quantity(
+        type=str, a_eln=dict(component='StringEditQuantity')
+    )
+    main_category = Quantity(type=str, a_eln=dict(component='StringEditQuantity'))
+    sub_category = Quantity(type=str, a_eln=dict(component='StringEditQuantity'))
 
 
-class EquipmentManager(Section):
+class EquipmentManager(ArchiveSection):
     """Subsection for equipment manager contact info."""
 
-    manager_id = Quantity(type=int)
-    firstname = Quantity(type=str)
-    lastname = Quantity(type=str)
-    email = Quantity(type=str)
+    manager_id = Quantity(type=int, a_eln=dict(component='NumberEditQuantity'))
+    firstname = Quantity(type=str, a_eln=dict(component='StringEditQuantity'))
+    lastname = Quantity(type=str, a_eln=dict(component='StringEditQuantity'))
+    email = Quantity(type=str, a_eln=dict(component='StringEditQuantity'))
 
 
-class IEntranceInstrument(ELNInstrument):
+class IEntranceInstrument(Instrument):
     """
     Custom instrument schema for iEntrance.
-    Inherits name, description, datetime, tags, and the instrument_identifiers
-    subsection from ELNInstrument.
+    Inherits basic entity fields (like name and description) from Instrument.
     """
 
     m_def = Section(label='iEntrance Instrument', a_eln=dict(lane_width='600px'))
 
     # --- Core iEntrance/FabLIMS Fields ---
-    fablims_id = Quantity(
-        type=int,
-        description='Persistent ID from FabLIMS.',
-        a_eln=dict(component='NumberEditQuantity'),
-    )
     tenant_id = Quantity(type=int, a_eln=dict(component='NumberEditQuantity'))
     tenant_name = Quantity(type=str, a_eln=dict(component='StringEditQuantity'))
     description_html = Quantity(type=str, a_eln=dict(component='RichTextEditQuantity'))
