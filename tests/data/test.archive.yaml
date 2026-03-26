@@ -1,6 +1,14 @@
 data:
   m_def: ientrance_instruments.schema_packages.schema_package.IEntranceInstrument
-  fablims_id: 999
+  name: "Test Instrument"
+  lab_id: "999"
   manufacturer: "Test Corp"
   product_model: "Test-O-Matic 3000"
   equipment_status: "Online"
+  techniques:
+    - technique_id: 1
+      name: "Scanning Electron Microscopy"
+  managers:
+    - manager_id: 1
+      firstname: "John"
+      lastname: "Doe"

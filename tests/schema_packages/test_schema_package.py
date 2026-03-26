@@ -8,6 +8,16 @@ def test_schema_package():
     # The parse function automatically builds the archive data
     entry_archive = parse(test_file)[0]
 
-    # Assert that our custom schema parsed the ID correctly
-    assert entry_archive.data.fablims_id == 999  # noqa PLR2004
+    # 1. Assert Core Fields
+    assert entry_archive.data.name == 'Test Instrument'
+    assert entry_archive.data.lab_id == '999'
     assert entry_archive.data.manufacturer == 'Test Corp'
+
+    # 2. Assert Techniques Subsection
+    assert len(entry_archive.data.techniques) == 1
+    assert entry_archive.data.techniques[0].name == 'Scanning Electron Microscopy'
+
+    # 3. Assert Managers Subsection
+    assert len(entry_archive.data.managers) == 1
+    assert entry_archive.data.managers[0].firstname == 'John'
+    assert entry_archive.data.managers[0].lastname == 'Doe'
