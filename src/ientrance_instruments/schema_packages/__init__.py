@@ -11,7 +11,7 @@ class IEntranceSchemaPackageEntryPoint(SchemaPackageEntryPoint):
         return m_package
 
 
-schema_package_entry_point = IEntranceSchemaPackageEntryPoint(
-    name='IEntranceInstrumentsSchema',
+ientrance_instruments_schema_package = IEntranceSchemaPackageEntryPoint(
+    name='iEntrance Instruments Schema',
     description='Schema package for iEntrance FabLIMS instruments.',
 )

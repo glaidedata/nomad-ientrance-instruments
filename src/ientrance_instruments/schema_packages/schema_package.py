@@ -9,7 +9,7 @@ from nomad.datamodel.metainfo.basesections import Instrument
 from nomad.metainfo import Quantity, SchemaPackage, Section, SubSection
 
 configuration = config.get_plugin_entry_point(
-    'ientrance_instruments.schema_packages:schema_package_entry_point'
+    'ientrance_instruments.schema_packages:ientrance_instruments_schema_package'
 )
 
 m_package = SchemaPackage()
