@@ -47,7 +47,7 @@ dev = [
 extra-index-url = [
   "https://gitlab.mpcdf.mpg.de/api/v4/projects/2187/packages/pypi/simple",
 ]
-    
+
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.
 exclude = [
@@ -127,12 +127,10 @@ package-dir = { "" = "src" }
 [tool.setuptools.packages.find]
 where = ["src"]
 
+
 [project.entry-points.'nomad.plugin']
 parser_entry_point = "ientrance_instruments.parsers:parser_entry_point"
-schema_package_entry_point = "ientrance_instruments.schema_packages:schema_package_entry_point"
-
-
-
+ientrance_instruments_schema_package = "ientrance_instruments.schema_packages:ientrance_instruments_schema_package"
 
 
 [tool.cruft]
