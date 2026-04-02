@@ -160,7 +160,7 @@ def sync_fablims_to_nomad(output_dir='nomad_upload'):
     )
 
 
-def upload_to_local_nomad(upload_dir='nomad_upload'):
+def upload_to_nomad(upload_dir='nomad_upload'):
     """Zips the output directory and uploads it using a Personal Access Token."""
 
     # 1. Zip the folder
@@ -169,7 +169,11 @@ def upload_to_local_nomad(upload_dir='nomad_upload'):
     shutil.make_archive(zip_filename, 'zip', upload_dir)
 
     # 2. Local NOMAD API Configuration
-    nomad_base_url = 'http://localhost:8000/nomad-oasis/api/v1'
+    DEFAULT_BASE_URL = "https://oasis.ientrance.eu/nomad-oasis/api/v1"
+
+    # Fetch from environment, fallback to DEFAULT_BASE_URL if not set
+    nomad_base_url = os.getenv('NOMAD_BASE_URL', DEFAULT_BASE_URL)
+    nomad_base_url = nomad_base_url.strip()
 
     # 3. Personal Access Token:
     token = os.getenv('NOMAD_PERSONAL_ACCESS_TOKEN')
@@ -203,4 +207,4 @@ def upload_to_local_nomad(upload_dir='nomad_upload'):
 
 if __name__ == '__main__':
     sync_fablims_to_nomad()
-    upload_to_local_nomad()
+    upload_to_nomad()

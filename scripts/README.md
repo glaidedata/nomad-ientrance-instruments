@@ -45,23 +45,12 @@ cp .env.example .env
 
 ## Step 3: Script Configuration (Target URL)
 
-By default, the script may be configured for local development. Before running it, you must ensure it is pointing to the live iEntrance Oasis.
+By default, the script will automatically upload the data to the live iEntrance Oasis (`https://oasis.ientrance.eu/nomad-oasis/api/v1`).
+If you want to test the script against a local development environment instead, you can override this URL:
 
-1. Open the `sync_fablims.py` file in your text editor.
-
-2. Scroll down to the `upload_to_local_nomad()` function.
-
-3. Find the `nomad_base_url` variable and update it to the live production URL:
-
-```Python
-# Change this:
-nomad_base_url = "http://localhost:8000/nomad-oasis/api/v1"
-
-# To this:
-nomad_base_url = "https://oasis.ientrance.eu/nomad-oasis/api/v1"
-```
-
-4. Save the file.
+1. Open your `.env` file.
+2. Add the `NOMAD_BASE_URL` variable and point it to your local environment.
+3. Save the file
 
 
 ## Step 4: Running the Script
