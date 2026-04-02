@@ -1,5 +1,6 @@
 import json
 import os
+import shutil
 import time
 
 import requests
@@ -11,12 +12,13 @@ def sync_fablims_to_nomad(output_dir='nomad_upload'):
     # 1. API Configuration
     base_url = 'https://ientrance.fablims.com/api/equipments'
 
-    # Fetch the API key from your computer's environment variables
+    # Fetch the API key from environment variables
     api_key = os.getenv('FABLIMS_API_KEY')
     if not api_key:
         raise ValueError(
             'ERROR: Please set the FABLIMS_API_KEY environment variable before running this script.'
         )
+    api_key = api_key.strip()
 
     headers = {'x-api-key': api_key, 'content-type': 'application/json'}
 
@@ -158,5 +160,51 @@ def sync_fablims_to_nomad(output_dir='nomad_upload'):
     )
 
 
+def upload_to_nomad(upload_dir='nomad_upload'):
+    """Zips the output directory and uploads it using a Personal Access Token."""
+
+    # 1. Zip the folder
+    print('Zipping files for upload...')
+    zip_filename = 'fablims_sync'
+    shutil.make_archive(zip_filename, 'zip', upload_dir)
+
+    # 2. Local NOMAD API Configuration
+    DEFAULT_BASE_URL = "https://oasis.ientrance.eu/nomad-oasis/api/v1"
+
+    # Fetch from environment, fallback to DEFAULT_BASE_URL if not set
+    nomad_base_url = os.getenv('NOMAD_BASE_URL', DEFAULT_BASE_URL)
+    nomad_base_url = nomad_base_url.strip()
+
+    # 3. Personal Access Token:
+    token = os.getenv('NOMAD_PERSONAL_ACCESS_TOKEN')
+
+    if not token:
+        raise ValueError(
+            'ERROR: Please set the NOMAD_PERSONAL_ACCESS_TOKEN environment variable.'
+        )
+    token = token.strip()
+
+    # 4. Upload the Zip File
+    print('Uploading to local NOMAD...')
+    headers = {'Authorization': f'Bearer {token}', 'Accept': 'application/json'}
+
+    with open(f'{zip_filename}.zip', 'rb') as f:
+        upload_response = requests.post(
+            f'{nomad_base_url}/uploads',
+            params={'upload_name': 'FabLIMS Instruments'},
+            headers=headers,
+            files={'file': (f'{zip_filename}.zip', f, 'application/zip')},
+        )
+
+    SUCCESS_STATUS_CODES = 200
+    if upload_response.status_code == SUCCESS_STATUS_CODES:
+        print('Upload successful! Check your local NOMAD dashboard.')
+        print(f'Upload ID: {upload_response.json().get("upload_id")}')
+    else:
+        print(f'Upload failed! Status Code: {upload_response.status_code}')
+        print(f'Server Response: {upload_response.text}')
+
+
 if __name__ == '__main__':
     sync_fablims_to_nomad()
+    upload_to_nomad()
