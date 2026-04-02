@@ -1,7 +1,7 @@
 import json
 import os
 import time
-
+import shutil
 import requests
 
 
@@ -17,6 +17,7 @@ def sync_fablims_to_nomad(output_dir='nomad_upload'):
         raise ValueError(
             'ERROR: Please set the FABLIMS_API_KEY environment variable before running this script.'
         )
+    api_key = api_key.strip()
 
     headers = {'x-api-key': api_key, 'content-type': 'application/json'}
 
@@ -158,5 +159,50 @@ def sync_fablims_to_nomad(output_dir='nomad_upload'):
     )
 
 
+def upload_to_local_nomad(upload_dir='nomad_upload'):
+    """Zips the output directory and uploads it using a Personal Access Token."""
+
+    # 1. Zip the folder
+    print("Zipping files for upload...")
+    zip_filename = 'fablims_sync'
+    shutil.make_archive(zip_filename, 'zip', upload_dir)
+
+    # 2. Local NOMAD API Configuration
+    nomad_base_url = "http://localhost:8000/nomad-oasis/api/v1"
+
+    # 3. Paste your Personal Access Token here:
+    token = os.getenv('NOMAD_PERSONAL_ACCESS_TOKEN')
+
+    if not token:
+        raise ValueError(
+            "ERROR: Please set the NOMAD_PERSONAL_ACCESS_TOKEN environment variable."
+        )
+    token = token.strip()
+
+    # 4. Upload the Zip File
+    print("Uploading to local NOMAD...")
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Accept": "application/json"
+    }
+
+    with open(f"{zip_filename}.zip", "rb") as f:
+        upload_response = requests.post(
+            f"{nomad_base_url}/uploads",
+            params={"upload_name": "FabLIMS Instruments"},
+            headers=headers,
+            files={"file": (f"{zip_filename}.zip", f, "application/zip")}
+        )
+
+    if upload_response.status_code == 200:
+        print("Upload successful! Check your local NOMAD dashboard.")
+        print(f"Upload ID: {upload_response.json().get('upload_id')}")
+    else:
+        print(f"Upload failed! Status Code: {upload_response.status_code}")
+        print(f"Server Response: {upload_response.text}")
+
+
+
 if __name__ == '__main__':
     sync_fablims_to_nomad()
+    upload_to_local_nomad()
