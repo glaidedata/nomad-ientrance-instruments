@@ -129,3 +129,5 @@ dmypy.json
 # Pyre type checker
 .pyre/
 nomad_upload/
+fablims_sync.zip
+.env
