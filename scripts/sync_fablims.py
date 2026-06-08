@@ -168,24 +168,37 @@ def upload_to_nomad(upload_dir='nomad_upload'):
     zip_filename = 'fablims_sync'
     shutil.make_archive(zip_filename, 'zip', upload_dir)
 
-    # 2. Local NOMAD API Configuration
+    # 2. NOMAD API Configuration
     DEFAULT_BASE_URL = "https://oasis.ientrance.eu/nomad-oasis/api/v1"
 
     # Fetch from environment, fallback to DEFAULT_BASE_URL if not set
     nomad_base_url = os.getenv('NOMAD_BASE_URL', DEFAULT_BASE_URL)
     nomad_base_url = nomad_base_url.strip()
 
-    # 3. Personal Access Token:
-    token = os.getenv('NOMAD_PERSONAL_ACCESS_TOKEN')
+    # 3. Fetch Dynamic Access Token (Username/Password):
+    username = os.getenv('NOMAD_USERNAME')
+    password = os.getenv('NOMAD_PASSWORD')
 
-    if not token:
+    if not username or not password:
         raise ValueError(
-            'ERROR: Please set the NOMAD_PERSONAL_ACCESS_TOKEN environment variable.'
+            'ERROR: Please set both NOMAD_USERNAME and NOMAD_PASSWORD environment variables.'
         )
-    token = token.strip()
+
+    print('Authenticating with NOMAD API...')
+    auth_url = f"{nomad_base_url}/auth/token"
+    token_response = requests.post(auth_url, data={
+        "username": username.strip(),
+        "password": password.strip(),
+        "grant_type": "password"
+    })
+
+    if token_response.status_code != 200:
+        raise ValueError(f"Authentication failed! Status: {token_response.status_code} - {token_response.text}")
+
+    token = token_response.json().get("access_token")
 
     # 4. Upload the Zip File
-    print('Uploading to local NOMAD...')
+    print('Uploading to NOMAD Oasis...')
     headers = {'Authorization': f'Bearer {token}', 'Accept': 'application/json'}
 
     with open(f'{zip_filename}.zip', 'rb') as f:
@@ -198,7 +211,7 @@ def upload_to_nomad(upload_dir='nomad_upload'):
 
     SUCCESS_STATUS_CODES = 200
     if upload_response.status_code == SUCCESS_STATUS_CODES:
-        print('Upload successful! Check your local NOMAD dashboard.')
+        print('Upload successful! Check your NOMAD Oasis dashboard.')
         print(f'Upload ID: {upload_response.json().get("upload_id")}')
     else:
         print(f'Upload failed! Status Code: {upload_response.status_code}')

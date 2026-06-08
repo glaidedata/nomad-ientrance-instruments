@@ -29,7 +29,7 @@ source .venv/bin/activate
 pip install requests
 ```
 
-## Step 2: Configuration & API Keys
+## Step 2: Configuration
 
 For security reasons, API keys are never hardcoded into the script. We use a hidden `.env` file to manage secrets securely.
 
@@ -41,7 +41,8 @@ cp .env.example .env
 
 3. Fill in your secure keys:
     - `FABLIMS_API_KEY`: Request this from your FabLIMS administrator.
-    - `NOMAD_PERSONAL_ACCESS_TOKEN`: Generate this by logging into your iEntrance NOMAD Oasis. In the top menu, navigate to **ANALYZE > APIs** and generate an **App token**. Copy the resulting token string.
+    - `NOMAD_USERNAME` & `NOMAD_PASSWORD` for your NOMAD user account
+    - `NOMAD_BASE_URL` is by default set to https://oasis.ientrance.eu/nomad-oasis/api/v1 so you can remove it if you want to upload the instruments to iEntrance Oasis.
 
 ## Step 3: Script Configuration (Target URL)
 
