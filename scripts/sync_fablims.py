@@ -169,7 +169,7 @@ def upload_to_nomad(upload_dir='nomad_upload'):
     shutil.make_archive(zip_filename, 'zip', upload_dir)
 
     # 2. NOMAD API Configuration
-    DEFAULT_BASE_URL = "https://oasis.ientrance.eu/nomad-oasis/api/v1"
+    DEFAULT_BASE_URL = 'https://oasis.ientrance.eu/nomad-oasis/api/v1'
 
     # Fetch from environment, fallback to DEFAULT_BASE_URL if not set
     nomad_base_url = os.getenv('NOMAD_BASE_URL', DEFAULT_BASE_URL)
@@ -185,17 +185,23 @@ def upload_to_nomad(upload_dir='nomad_upload'):
         )
 
     print('Authenticating with NOMAD API...')
-    auth_url = f"{nomad_base_url}/auth/token"
-    token_response = requests.post(auth_url, data={
-        "username": username.strip(),
-        "password": password.strip(),
-        "grant_type": "password"
-    })
+    auth_url = f'{nomad_base_url}/auth/token'
+    token_response = requests.post(
+        auth_url,
+        data={
+            'username': username.strip(),
+            'password': password.strip(),
+            'grant_type': 'password',
+        },
+    )
 
-    if token_response.status_code != 200:
-        raise ValueError(f"Authentication failed! Status: {token_response.status_code} - {token_response.text}")
+    SUCCESS_STATUS_CODES = 200
+    if token_response.status_code != SUCCESS_STATUS_CODES:
+        raise ValueError(
+            f'Authentication failed! Status: {token_response.status_code} - {token_response.text}'
+        )
 
-    token = token_response.json().get("access_token")
+    token = token_response.json().get('access_token')
 
     # 4. Upload the Zip File
     print('Uploading to NOMAD Oasis...')
@@ -209,7 +215,6 @@ def upload_to_nomad(upload_dir='nomad_upload'):
             files={'file': (f'{zip_filename}.zip', f, 'application/zip')},
         )
 
-    SUCCESS_STATUS_CODES = 200
     if upload_response.status_code == SUCCESS_STATUS_CODES:
         print('Upload successful! Check your NOMAD Oasis dashboard.')
         print(f'Upload ID: {upload_response.json().get("upload_id")}')
