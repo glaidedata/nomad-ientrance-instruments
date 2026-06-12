@@ -29,7 +29,7 @@ dependencies = [
 ]
 
 [project.urls]
-Repository = "https://github.com/abbasgholami71/ientrance-instruments"
+Repository = "https://github.com/glaidedata/nomad-ientrance-instruments"
 
 [project.optional-dependencies]
 dev = [
